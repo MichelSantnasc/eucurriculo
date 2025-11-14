@@ -1,0 +1,1244 @@
+<DOCUMENT filename="index.html">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de CV Fácil - Crie Seu Currículo Profissional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+     crossorigin="anonymous"></script> --> <!-- Descomente e substitua pelo seu Client ID do AdSense -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Roboto', sans-serif; 
+            margin: 0; padding: 0; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+            color: #333;
+            display: flex;
+        }
+        /* Layout com sidebars para anúncios */
+        .main-container {
+            display: flex;
+            width: 100%;
+            max-width: 1400px;
+            margin: auto;
+        }
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            flex-shrink: 0;
+        }
+        .sidebar-left { order: 1; }
+        .sidebar-right { order: 3; }
+        .container { 
+            flex: 1;
+            max-width: 900px; 
+            padding: 20px; 
+            background: rgba(255,255,255,0.95); 
+            border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            margin: 20px;
+            order: 2;
+        }
+        @media (max-width: 1200px) {
+            .sidebar { display: none; } /* Esconde sidebars em telas menores */
+            .container { margin: 20px auto; }
+        }
+        h1 { 
+            text-align: center; 
+            color: #4a5568; 
+            margin-bottom: 10px; 
+            font-weight: 300; 
+            font-size: 2.5em;
+        }
+        h1 i { color: #667eea; margin-right: 10px; }
+        .subtitle { text-align: center; color: #718096; margin-bottom: 30px; font-size: 1.1em; }
+        label { 
+            display: flex; align-items: center; 
+            margin: 15px 0 8px; 
+            font-weight: 500; 
+            color: #4a5568; 
+            font-size: 0.95em;
+        }
+        label i { margin-right: 8px; color: #667eea; width: 16px; }
+        input, textarea, select { 
+            width: 100%; 
+            padding: 12px 15px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 8px; 
+            font-size: 1em; 
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="file"] { padding: 8px; }
+        input:focus, textarea:focus, select:focus { 
+            outline: none; 
+            border-color: #667eea; 
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .input-group-three { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 10px; }
+        input[type="number"] { width: 100%; }
+        /* Telefone com máscara */
+        input[type="tel"] { font-family: monospace; }
+        .telefone-group { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .telefone-group input { width: auto; flex: 1; }
+        .whatsapp-checkbox { transform: scale(1.2); }
+        .telefone-item, .idioma-item, .experiencia, .educacao-item { 
+            background: #f7fafc; 
+            border: 2px solid #e2e8f0; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            transition: box-shadow 0.3s;
+        }
+        .telefone-item:hover, .idioma-item:hover, .experiencia:hover, .educacao-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .add-btn, .remove-btn { 
+            background: #48bb78; color: white; 
+            border: none; padding: 8px 15px; 
+            cursor: pointer; border-radius: 6px; 
+            margin: 10px 0; font-size: 0.9em; 
+            transition: background 0.3s;
+        }
+        .add-btn:hover { background: #38a169; }
+        .remove-btn { background: #f56565; }
+        .remove-btn:hover { background: #e53e3e; }
+        .btn-gerar { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 15px 25px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 1.1em; 
+            font-weight: 500; 
+            margin: 10px 0; 
+            transition: transform 0.2s, box-shadow 0.3s;
+        }
+        .btn-gerar:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        .final-buttons { 
+            display: flex; flex-direction: column; gap: 10px; 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: #f7fafc; 
+            border-radius: 8px; 
+        }
+        #preview { 
+            margin-top: 30px; 
+            padding: 25px; 
+            background: white; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+            display: none; 
+            max-height: 600px; 
+            overflow-y: auto;
+        }
+        #preview h2 { color: #4a5568; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        #preview h3 { color: #4a5568; font-size: 1.8em; margin-bottom: 5px; }
+        #preview ul { margin: 10px 0; padding-left: 20px; }
+        #preview .foto-preview { width: 80px; height: 100px; object-fit: cover; border-radius: 4px; float: left; margin-right: 10px; }
+        footer { 
+            text-align: center; 
+            color: #a0aec0; 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+        }
+        /* Mensagens de notificação bonitas (sucesso e erro) */
+        .notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-weight: 500;
+            color: white;
+            animation: slideIn 0.3s ease-out;
+            min-width: 300px;
+        }
+        .notification.success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+        }
+        .notification.error {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+        }
+        .notification.show {
+            display: block;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        /* Anúncios Google */
+        .adsense-unit {
+            margin: 20px 0;
+            text-align: center;
+        }
+        /* Accordion styles */
+        #accordion { margin-bottom: 20px; }
+        .accordion-section { 
+            margin-bottom: 10px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            background: white;
+        }
+        .accordion-header { 
+            background: #f7fafc; 
+            padding: 15px; 
+            cursor: pointer; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-weight: 500; 
+            color: #667eea; 
+            transition: background 0.3s;
+        }
+        .accordion-header:hover { background: #edf2f7; }
+        .accordion-header h4 { margin: 0; }
+        .accordion-header h4 i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+        .accordion-header i { 
+            transition: transform 0.3s; 
+            font-size: 1.2em;
+        }
+        .accordion-section.open .accordion-header i:last-child {
+            transform: rotate(90deg);
+        }
+        .accordion-content { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: max-height 0.3s ease, padding 0.3s ease; 
+            padding: 0 15px;
+        }
+        .accordion-section.open .accordion-content { 
+            max-height: none; 
+            padding: 15px 15px;
+        }
+        .form-section { margin-bottom: 0; border: none; padding: 0; } /* Adjust inner sections */
+        .form-section h5 { color: #667eea; margin-top: 0; margin-bottom: 10px; }
+        @media (max-width: 768px) { 
+            .container { margin: 10px; padding: 15px; } 
+            h1 { font-size: 2em; }
+            .btn-gerar { padding: 12px; }
+            .input-group, .input-group-three { grid-template-columns: 1fr; }
+            .notification { right: 10px; left: 10px; top: 10px; min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Sidebar Esquerda para Anúncios -->
+        <div class="sidebar sidebar-left">
+            <div class="adsense-unit">
+                <!-- 
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" 
+                     data-ad-slot="YYYYYYYYYY" 
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                -->
+                <!-- Descomente o bloco acima quando tiver AdSense aprovado. Substitua pelos IDs reais. -->
+            </div>
+        </div>
+
+        <div class="container">
+            <h1><i class="fas fa-file-alt"></i>Gerador de Currículo Profissional</h1>
+            <p class="subtitle"><em>Crie um CV impactante em minutos. Grátis!</em></p>
+
+            <form id="cvForm">
+                <div id="accordion">
+                    <!-- Section 1: Dados Pessoais -->
+                    <div class="accordion-section open" id="section1" role="region" aria-labelledby="header1">
+                        <div class="accordion-header" onclick="toggleSection(this)" id="header1" aria-expanded="true">
+                            <h4><i class="fas fa-user"></i>1. Seus Dados Pessoais</h4>
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="form-section">
+                                <label><i class="fas fa-user"></i>Nome Completo:</label><input type="text" id="nome" required>
+                                <label><i class="fas fa-camera"></i>Imagem de Perfil (opcional):</label><input type="file" id="foto" accept="image/*">
+                                <label><i class="fas fa-venus-mars"></i>Estado Civil e Idade:</label>
+                                <div class="input-group">
+                                    <select id="estadoCivil">
+                                        <option value="">-- Selecione --</option>
+                                        <option value="Solteiro">Solteiro</option>
+                                        <option value="Casado">Casado</option>
+                                        <option value="Divorciado">Divorciado</option>
+                                        <option value="Viúvo">Viúvo</option>
+                                        <option value="Separado">Separado</option>
+                                        <option value="União Estável">União Estável</option>
+                                    </select>
+                                    <input type="number" id="idade" placeholder="Ex: 51" min="18" max="100">
+                                </div>
+                                <label><i class="fas fa-map-marker-alt"></i>CEP, Cidade e UF:</label>
+                                <div class="input-group-three">
+                                    <input type="text" id="cep" placeholder="Ex: 59164000" maxlength="9" onblur="buscarCep()">
+                                    <input type="text" id="cidade" placeholder="Cidade (auto)" readonly>
+                                    <input type="text" id="uf" placeholder="UF (auto)" readonly>
+                                </div>
+                                <label><i class="fas fa-home"></i>Endereço Completo (opcional):</label><input type="text" id="endereco" placeholder="Ex: Rua Exemplo, 123">
+                                <label><i class="fas fa-envelope"></i>Email:</label><input type="email" id="email" required placeholder="exemplo@dominio.com">
+                                <label><i class="fas fa-phone"></i>Números de Telefone:</label>
+                                <div id="telefones">
+                                    <div class="telefone-item">
+                                        <div class="telefone-group">
+                                            <input type="tel" id="telefone1" placeholder="(11) 98765-4321" class="telefone" required>
+                                            <label for="whatsapp1" class="whatsapp-checkbox"><input type="checkbox" id="whatsapp1" class="whatsapp"> WhatsApp</label>
+                                        </div>
+                                        <button type="button" class="remove-btn" onclick="removerTelefone(this)"><i class="fas fa-trash"></i> Remover</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="add-btn" onclick="adicionarTelefone()"><i class="fas fa-plus"></i> + Adicionar Telefone</button>
+                                <label><i class="fab fa-linkedin"></i>LinkedIn/Portfolio:</label><input type="url" id="linkedin">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Objetivo -->
+                    <div class="accordion-section" id="section2" role="region" aria-labelledby="header2">
+                        <div class="accordion-header" onclick="toggleSection(this)" id="header2" aria-expanded="false">
+                            <h4><i class="fas fa-bullseye"></i>2. Seu Objetivo Profissional</h4>
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="form-section">
+                                <label><i class="fas fa-bullseye"></i>Objetivo Profissional:</label><textarea id="objetivo" rows="2" placeholder="Ex: SEGURANÇA"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Experiência -->
+                    <div class="accordion-section" id="section3" role="region" aria-labelledby="header3">
+                        <div class="accordion-header" onclick="toggleSection(this)" id="header3" aria-expanded="false">
+                            <h4><i class="fas fa-briefcase"></i>3. Suas Experiências Profissionais</h4>
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="form-section">
+                                <div id="experiencias">
+                                    <div class="experiencia">
+                                        <input type="text" placeholder="Cargo" class="cargo" required>
+                                        <input type="text" placeholder="Empresa" class="empresa" required>
+                                        <input type="text" placeholder="Período (ex: 2014 - 2024)" class="periodo" required>
+                                        <textarea placeholder="Descrição (bullets separadas por ; - opcional)" class="descricao" rows="2"></textarea>
+                                        <button type="button" class="remove-btn" onclick="removerExp(this)"><i class="fas fa-trash"></i> Remover</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="add-btn" onclick="adicionarExp()"><i class="fas fa-plus"></i> + Adicionar Experiência</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Formação & Idiomas -->
+                    <div class="accordion-section" id="section4" role="region" aria-labelledby="header4">
+                        <div class="accordion-header" onclick="toggleSection(this)" id="header4" aria-expanded="false">
+                            <h4><i class="fas fa-graduation-cap"></i>4. Sua Formação & Idiomas</h4>
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="form-section">
+                                <h5>Sua Formação Acadêmica</h5>
+                                <div id="educacoes">
+                                    <div class="educacao-item">
+                                        <select class="tipo-educacao">
+                                            <option value="">-- Tipo (opcional) --</option>
+                                            <option value="Ensino Fundamental">Ensino Fundamental</option>
+                                            <option value="Ensino Médio">Ensino Médio</option>
+                                            <option value="Graduação">Graduação</option>
+                                            <option value="Pós-Graduação">Pós-Graduação</option>
+                                            <option value="Mestrado">Mestrado</option>
+                                            <option value="Doutorado">Doutorado</option>
+                                            <option value="Curso Técnico">Curso Técnico</option>
+                                        </select>
+                                        <input type="text" placeholder="Instituição (escola/faculdade)" class="instituicao" required>
+                                        <div class="input-group">
+                                            <input type="number" placeholder="Ano Início (opcional)" class="ano-inicio" min="1900" max="2025">
+                                            <input type="number" placeholder="Ano Término (opcional)" class="ano-termino" min="1900" max="2025">
+                                        </div>
+                                        <button type="button" class="remove-btn" onclick="removerEducacao(this)"><i class="fas fa-trash"></i> Remover</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="add-btn" onclick="adicionarEducacao()"><i class="fas fa-plus"></i> + Adicionar Formação</button>
+                            </div>
+                            <div class="form-section">
+                                <h5>Idiomas</h5>
+                                <div id="idiomas">
+                                    <div class="idioma-item">
+                                        <input type="text" list="idiomas-lista" placeholder="Idioma (ex: Inglês)" class="idioma-nome" required>
+                                        <select class="nivel-idioma">
+                                            <option value="">-- Nível --</option>
+                                            <option value="Básico">Básico</option>
+                                            <option value="Intermediário">Intermediário</option>
+                                            <option value="Avançado">Avançado</option>
+                                            <option value="Fluente">Fluente</option>
+                                            <option value="Nativo">Nativo</option>
+                                        </select>
+                                        <button type="button" class="remove-btn" onclick="removerIdioma(this)"><i class="fas fa-trash"></i> Remover</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="add-btn" onclick="adicionarIdioma()"><i class="fas fa-plus"></i> + Adicionar Idioma</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Habilidades & Detalhes Adicionais -->
+                    <div class="accordion-section" id="section5" role="region" aria-labelledby="header5">
+                        <div class="accordion-header" onclick="toggleSection(this)" id="header5" aria-expanded="false">
+                            <h4><i class="fas fa-certificate"></i>5. Suas Habilidades & Detalhes Adicionais</h4>
+                            <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="form-section">
+                                <h5>Suas Habilidades</h5>
+                                <label><i class="fas fa-tools"></i>Habilidades:</label>
+                                <textarea id="skills" rows="2" placeholder="Ex: Liderança, Excel Avançado, Inglês Fluente; separe por vírgula"></textarea>
+                            </div>
+                            <div class="form-section">
+                                <h5>Detalhes Adicionais</h5>
+                                <label><i class="fas fa-info-circle"></i>Informações Adicionais:</label>
+                                <textarea id="adicional" rows="2" placeholder="Ex: CNH A/B e veículo próprio"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="final-buttons">
+                    <button type="button" class="btn-gerar" onclick="previewCV()"><i class="fas fa-eye"></i> Pré-visualizar</button>
+                    <button type="button" class="btn-gerar" onclick="gerarCV()"><i class="fas fa-download"></i> Gerar PDF Grátis</button>
+                </div>
+            </form>
+
+            <div id="preview"></div>
+
+            <footer>
+                <p>  © 2025 Feito por | <a href="https://www.instagram.com/michelsantnasc/" style="color: #667eea;">Santnasc</a></p>
+            </footer>
+        </div>
+
+        <!-- Sidebar Direita para Anúncios -->
+        <div class="sidebar sidebar-right">
+            <div class="adsense-unit">
+                <!-- 
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" 
+                     data-ad-slot="ZZZZZZZZZZ" 
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+                <script>
+                     (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+                -->
+                <!-- Descomente o bloco acima quando tiver AdSense aprovado. Substitua pelos IDs reais. -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificações -->
+    <div id="notification-success" class="notification success">
+        <i class="fas fa-check-circle"></i> Seu CV foi gerado com sucesso! Baixe o PDF e conquiste novas oportunidades.
+    </div>
+    <div id="notification-error" class="notification error">
+        <i class="fas fa-exclamation-triangle"></i> <span id="error-message"></span>
+    </div>
+
+    <datalist id="idiomas-lista">
+        <option value="Inglês">
+        <option value="Espanhol">
+        <option value="Francês">
+        <option value="Alemão">
+        <option value="Português">
+        <option value="Italiano">
+        <option value="Chinês">
+        <option value="Japonês">
+        <option value="Russo">
+        <option value="Árabe">
+        <option value="Holandês">
+        <option value="Sueco">
+    </datalist>
+
+    <script>
+        let formCompleted = false;
+        let expCount = 1;
+        let telCount = 1;
+        let eduCount = 1;
+        let idiomaCount = 1;
+        let corSelecionada = 'classico'; // Fixed to classico
+        let fotoBase64 = null;
+
+        // Função para mostrar notificação
+        function showNotification(type, message) {
+            const notif = document.getElementById(`notification-${type}`);
+            const msgElement = type === 'error' ? document.getElementById('error-message') : notif;
+            if (type === 'error') {
+                msgElement.textContent = message;
+            } else {
+                notif.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            }
+            notif.classList.add('show');
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 5000); // Esconde após 5s
+        }
+
+        function updateMaxHeight(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section && section.classList.contains('open')) {
+                const content = section.querySelector('.accordion-content');
+                content.style.maxHeight = content.scrollHeight + 'px';
+            }
+        }
+
+        // Accordion toggle - agora como accordion real (não fecha outras)
+        function toggleSection(header) {
+            const section = header.parentElement;
+            const content = section.querySelector('.accordion-content');
+            const headerId = header.id;
+            const isOpen = section.classList.contains('open');
+
+            // Toggle só a atual
+            if (isOpen) {
+                section.classList.remove('open');
+                content.style.maxHeight = '0px';
+                header.setAttribute('aria-expanded', 'false');
+            } else {
+                section.classList.add('open');
+                setTimeout(() => {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                }, 0);
+                header.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        // Initialize first section open
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstSection = document.querySelector('.accordion-section.open');
+            if (firstSection) {
+                const firstContent = firstSection.querySelector('.accordion-content');
+                const firstHeader = firstSection.querySelector('.accordion-header');
+                setTimeout(() => {
+                    firstContent.style.maxHeight = firstContent.scrollHeight + 'px';
+                }, 0);
+                firstHeader.setAttribute('aria-expanded', 'true');
+            }
+            formCompleted = true;
+
+            // Aplicar máscara de telefone em inputs existentes
+            document.querySelectorAll('.telefone').forEach(applyPhoneMask);
+
+            // REMOVIDO: Máscara de email
+        });
+
+        // Máscara para telefone brasileiro (11 dígitos ou 10)
+        function applyPhoneMask(input) {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length <= 10) {
+                    // Fixo: (11) 1234-5678
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{4})(\d)/, '$1-$2');
+                } else {
+                    // Celular: (11) 9 1234-5678
+                    value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                    value = value.replace(/(\d{1})(\d{4})(\d)/, '$1 $2-$3');
+                }
+                e.target.value = value;
+            });
+
+            input.addEventListener('keydown', function(e) {
+                // Permitir backspace, delete, etc.
+                if (e.key === 'Backspace' || e.key === 'Delete') return;
+                // Bloquear se já tem máscara completa
+                if (e.target.value.length >= 14) e.preventDefault();
+            });
+        }
+
+        // Upload de foto para base64 com limite de tamanho
+        document.getElementById('foto').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) { // 2MB
+                    showNotification('error', 'Foto muito grande! Máximo 2MB.');
+                    e.target.value = '';
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    fotoBase64 = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Função para formatar telefone (só no PDF/preview) - remove máscara
+        function formatarTelefone(telRaw) {
+            const digits = telRaw.replace(/\D/g, '');
+            if (digits.length === 11) {
+                return `(${digits.substring(0,2)}) 9 ${digits.substring(3,7)}-${digits.substring(7,11)}`;
+            } else if (digits.length === 10) {
+                return `(${digits.substring(0,2)}) ${digits.substring(2,6)}-${digits.substring(6,10)}`;
+            }
+            return telRaw; // Fallback
+        }
+
+        // Função para formatar CEP
+        function formatarCep(cepRaw) {
+            const digits = cepRaw.replace(/\D/g, '');
+            if (digits.length === 8) {
+                return `${digits.substring(0,5)}-${digits.substring(5,8)}`;
+            }
+            return cepRaw; // Fallback
+        }
+
+        // Busca CEP via ViaCEP API com timeout
+        function buscarCep() {
+            const cep = document.getElementById('cep').value.replace(/\D/g, '');
+            if (cep.length !== 8) {
+                document.getElementById('cidade').value = '';
+                document.getElementById('uf').value = '';
+                if (cep) showNotification('error', 'CEP deve ter 8 dígitos!');
+                return;
+            }
+            const controller = new AbortController();
+            setTimeout(() => controller.abort(), 5000); // 5s timeout
+            fetch(`https://viacep.com.br/ws/${cep}/json/`, { signal: controller.signal })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.erro) {
+                        showNotification('error', 'CEP não encontrado!');
+                        document.getElementById('cidade').value = '';
+                        document.getElementById('uf').value = '';
+                        return;
+                    }
+                    document.getElementById('cidade').value = data.localidade;
+                    document.getElementById('uf').value = data.uf;
+                })
+                .catch(err => {
+                    if (err.name === 'AbortError') {
+                        showNotification('error', 'Timeout na busca de CEP. Verifique conexão.');
+                    } else {
+                        showNotification('error', 'Erro ao buscar CEP. Verifique conexão.');
+                    }
+                    document.getElementById('cidade').value = '';
+                    document.getElementById('uf').value = '';
+                });
+        }
+
+        // Telefones - aplicar máscara nos novos
+        function adicionarTelefone() {
+            if (telCount >= 5) { 
+                showNotification('error', 'Máximo de 5 telefones!'); 
+                return; 
+            }
+            const container = document.getElementById('telefones');
+            const div = document.createElement('div');
+            const telId = `telefone${telCount + 1}`;
+            const waId = `whatsapp${telCount + 1}`;
+            div.className = 'telefone-item';
+            div.innerHTML = `
+                <div class="telefone-group">
+                    <input type="tel" id="${telId}" placeholder="(11) 98765-4321" class="telefone" required>
+                    <label for="${waId}" class="whatsapp-checkbox"><input type="checkbox" id="${waId}" class="whatsapp"> WhatsApp</label>
+                </div>
+                <button type="button" class="remove-btn" onclick="removerTelefone(this)"><i class="fas fa-trash"></i> Remover</button>
+            `;
+            container.appendChild(div);
+            applyPhoneMask(document.getElementById(telId)); // Aplicar máscara
+            telCount++;
+            setTimeout(() => updateMaxHeight('section1'), 0);
+        }
+
+        function removerTelefone(btn) {
+            if (document.querySelectorAll('.telefone-item').length > 1) {
+                btn.parentElement.remove();
+                telCount--;
+                setTimeout(() => updateMaxHeight('section1'), 0);
+            } else {
+                showNotification('error', 'Mantenha pelo menos um telefone!');
+            }
+        }
+
+        // Idiomas with suggestions
+        function adicionarIdioma() {
+            if (idiomaCount >= 5) { 
+                showNotification('error', 'Máximo de 5 idiomas!'); 
+                return; 
+            }
+            const container = document.getElementById('idiomas');
+            const div = document.createElement('div');
+            div.className = 'idioma-item';
+            div.innerHTML = `
+                <input type="text" list="idiomas-lista" placeholder="Idioma (ex: Inglês)" class="idioma-nome" required>
+                <select class="nivel-idioma">
+                    <option value="">-- Nível --</option>
+                    <option value="Básico">Básico</option>
+                    <option value="Intermediário">Intermediário</option>
+                    <option value="Avançado">Avançado</option>
+                    <option value="Fluente">Fluente</option>
+                    <option value="Nativo">Nativo</option>
+                </select>
+                <button type="button" class="remove-btn" onclick="removerIdioma(this)"><i class="fas fa-trash"></i> Remover</button>
+            `;
+            container.appendChild(div);
+            idiomaCount++;
+            setTimeout(() => updateMaxHeight('section4'), 0);
+        }
+
+        function removerIdioma(btn) {
+            if (document.querySelectorAll('.idioma-item').length > 1) {
+                btn.parentElement.remove();
+                idiomaCount--;
+                setTimeout(() => updateMaxHeight('section4'), 0);
+            } else {
+                showNotification('error', 'Mantenha pelo menos um idioma!');
+            }
+        }
+
+        // Educação
+        function adicionarEducacao() {
+            if (eduCount >= 5) { 
+                showNotification('error', 'Máximo de 5 educações!'); 
+                return; 
+            }
+            const container = document.getElementById('educacoes');
+            const div = document.createElement('div');
+            div.className = 'educacao-item';
+            div.innerHTML = `
+                <select class="tipo-educacao">
+                    <option value="">-- Tipo (opcional) --</option>
+                    <option value="Ensino Fundamental">Ensino Fundamental</option>
+                    <option value="Ensino Médio">Ensino Médio</option>
+                    <option value="Graduação">Graduação</option>
+                    <option value="Pós-Graduação">Pós-Graduação</option>
+                    <option value="Mestrado">Mestrado</option>
+                    <option value="Doutorado">Doutorado</option>
+                    <option value="Curso Técnico">Curso Técnico</option>
+                </select>
+                <input type="text" placeholder="Instituição (escola/faculdade)" class="instituicao" required>
+                <div class="input-group">
+                    <input type="number" placeholder="Ano Início (opcional)" class="ano-inicio" min="1900" max="2025">
+                    <input type="number" placeholder="Ano Término (opcional)" class="ano-termino" min="1900" max="2025">
+                </div>
+                <button type="button" class="remove-btn" onclick="removerEducacao(this)"><i class="fas fa-trash"></i> Remover</button>
+            `;
+            container.appendChild(div);
+            eduCount++;
+            setTimeout(() => updateMaxHeight('section4'), 0);
+        }
+
+        function removerEducacao(btn) {
+            if (document.querySelectorAll('.educacao-item').length > 1) {
+                btn.parentElement.remove();
+                eduCount--;
+                setTimeout(() => updateMaxHeight('section4'), 0);
+            } else {
+                showNotification('error', 'Mantenha pelo menos uma educação!');
+            }
+        }
+
+        // Experiências
+        function adicionarExp() {
+            const container = document.getElementById('experiencias');
+            const div = document.createElement('div');
+            div.className = 'experiencia';
+            div.innerHTML = `
+                <input type="text" placeholder="Cargo" class="cargo" required>
+                <input type="text" placeholder="Empresa" class="empresa" required>
+                <input type="text" placeholder="Período (ex: 2014 - 2024)" class="periodo" required>
+                <textarea placeholder="Descrição (bullets separadas por ; - opcional)" class="descricao" rows="2"></textarea>
+                <button type="button" class="remove-btn" onclick="removerExp(this)"><i class="fas fa-trash"></i> Remover</button>
+            `;
+            container.appendChild(div);
+            expCount++;
+            setTimeout(() => updateMaxHeight('section3'), 0);
+        }
+
+        function removerExp(btn) {
+            if (document.querySelectorAll('.experiencia').length > 1) {
+                btn.parentElement.remove();
+                setTimeout(() => updateMaxHeight('section3'), 0);
+            } else {
+                showNotification('error', 'Mantenha pelo menos uma experiência!');
+            }
+        }
+
+        function validateStep(step) {
+            // Basic validation per step
+            switch (step) {
+                case 1:
+                    const nome = document.getElementById('nome').value;
+                    const email = document.getElementById('email').value;
+                    if (!nome || !email || !email.includes('@') || !email.includes('.')) {
+                        showNotification('error', 'Preencha nome e email válido no passo 1!');
+                        return false;
+                    }
+                    // Validação telefones
+                    const tels = document.querySelectorAll('.telefone');
+                    let hasValidTel = false;
+                    tels.forEach(tel => {
+                        const telValue = tel.value.replace(/\D/g, '');
+                        if (telValue.length >= 10) hasValidTel = true;
+                        else if (tel.value && telValue.length < 10) {
+                            showNotification('error', 'Telefone inválido no passo 1!');
+                            return false;
+                        }
+                    });
+                    if (!hasValidTel) {
+                        showNotification('error', 'Adicione pelo menos um telefone válido no passo 1!');
+                        return false;
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        function validarForm() {
+            // Validação expandida
+            if (!validateStep(1)) return false;
+
+            // Checar pelo menos 1 experiência
+            const exps = document.querySelectorAll('.experiencia');
+            let hasExp = false;
+            exps.forEach(exp => {
+                const cargo = exp.querySelector('.cargo').value.trim();
+                if (cargo) hasExp = true;
+            });
+            if (!hasExp) {
+                showNotification('error', 'Adicione pelo menos uma experiência profissional!');
+                return false;
+            }
+
+            // Checar pelo menos 1 educação
+            const eduItems = document.querySelectorAll('.educacao-item');
+            let hasEdu = false;
+            eduItems.forEach(item => {
+                const instituicao = item.querySelector('.instituicao').value.trim();
+                if (instituicao) hasEdu = true;
+            });
+            if (!hasEdu) {
+                showNotification('error', 'Adicione pelo menos uma formação acadêmica!');
+                return false;
+            }
+
+            // Checar idiomas se adicionados
+            const idiomaItems = document.querySelectorAll('.idioma-item');
+            idiomaItems.forEach(item => {
+                const nome = item.querySelector('.idioma-nome').value.trim();
+                const nivel = item.querySelector('.nivel-idioma').value;
+                if (nome && !nivel) {
+                    showNotification('error', 'Selecione o nível para o idioma adicionado!');
+                    return false;
+                }
+            });
+
+            return true;
+        }
+
+        function previewCV() {
+            if (!validarForm()) return;
+            const preview = document.getElementById('preview');
+            let corPreview = '#4a5568'; // Fixed color
+            let html = '<h2><i class="fas fa-file-pdf"></i> Pré-visualização do Seu CV</h2>';
+            // Dados pessoais com foto e layout lateral
+            html += '<div style="display: flex; align-items: flex-start; margin-bottom: 20px;">';
+            const nomeValue = document.getElementById('nome').value;
+            if (fotoBase64) {
+                html += `<img src="${fotoBase64}" class="foto-preview" alt="Foto de perfil de ${nomeValue}">`;
+            }
+            html += '<div style="flex: 1;">';
+            let nomeText = nomeValue.toUpperCase();
+            const civil = document.getElementById('estadoCivil').value;
+            const idade = document.getElementById('idade').value;
+            const cep = document.getElementById('cep').value;
+            const cidade = document.getElementById('cidade').value;
+            const uf = document.getElementById('uf').value;
+            const end = document.getElementById('endereco').value;
+            if (civil || idade) nomeText += `<br><small>${civil ? civil + ', ' : ''}${idade ? idade + ' anos' : ''}</small>`;
+            if (cep || end || cidade || uf) {
+                let addressText = '';
+                if (cep) addressText += `${formatarCep(cep)} – `;
+                if (end) addressText += `${end} – `;
+                if (cidade) addressText += `${cidade} – `;
+                if (uf) addressText += `${uf}`;
+                nomeText += `<br><small>${addressText}</small>`;
+            }
+            html += `<h3 style="color: ${corPreview}; margin: 0;">${nomeText}</h3>`;
+            html += '</div></div>';
+            html += `<p style="color: ${corPreview};"><i class="fas fa-envelope"></i> Email: ${document.getElementById('email').value}</p>`;
+            // Telefones (formatados)
+            let telefonesHtml = `<p style="color: ${corPreview};"><i class="fas fa-phone"></i> Telefones: `;
+            const tels = document.querySelectorAll('.telefone');
+            let hasTel = false;
+            tels.forEach((tel, idx) => {
+                if (tel.value) {
+                    hasTel = true;
+                    const formatted = formatarTelefone(tel.value);
+                    const isWA = tel.closest('.telefone-group').querySelector('.whatsapp').checked;
+                    telefonesHtml += `${formatted}${isWA ? ' (WhatsApp)' : ''}${idx < tels.length - 1 ? ', ' : ''}`;
+                }
+            });
+            telefonesHtml += '</p>';
+            if (hasTel) html += telefonesHtml;
+            const linkedin = document.getElementById('linkedin').value;
+            if (linkedin) html += `<p style="color: ${corPreview};"><i class="fab fa-linkedin"></i> <a href="${linkedin}" target="_blank">LinkedIn</a></p>`;
+            // Objetivo
+            const obj = document.getElementById('objetivo').value.trim();
+            if (obj) html += `<h4 style="color: ${corPreview}; border-bottom: 1px solid ${corPreview}; padding-bottom: 5px;"><i class="fas fa-bullseye"></i> OBJETIVO</h4><p>${obj.toUpperCase()}</p>`;
+            // Experiências
+            const exps = document.querySelectorAll('.experiencia');
+            let hasExp = false;
+            exps.forEach(exp => {
+                const cargo = exp.querySelector('.cargo').value.trim();
+                if (cargo) hasExp = true;
+            });
+            if (hasExp) {
+                html += `<h4 style="color: ${corPreview}; border-bottom: 1px solid ${corPreview}; padding-bottom: 5px;"><i class="fas fa-briefcase"></i> EXPERIÊNCIA PROFISSIONAL:</h4>`;
+                exps.forEach(exp => {
+                    const cargo = exp.querySelector('.cargo').value.trim();
+                    const empresa = exp.querySelector('.empresa').value.trim();
+                    const periodo = exp.querySelector('.periodo').value.trim();
+                    const desc = exp.querySelector('.descricao').value.split(';').map(d => d.trim()).filter(d => d);
+                    if (cargo) {
+                        html += `<h5 style="color: ${corPreview};">${cargo.toUpperCase()}</h5><p><strong>${empresa}</strong> | ${periodo}</p>`;
+                        if (desc.length > 0) {
+                            html += '<ul>';
+                            desc.forEach(bullet => html += `<li>${bullet}</li>`);
+                            html += '</ul>';
+                        }
+                    }
+                });
+            }
+            // Educações
+            const eduItems = document.querySelectorAll('.educacao-item');
+            let hasEdu = false;
+            eduItems.forEach(item => {
+                const instituicao = item.querySelector('.instituicao').value.trim();
+                if (instituicao) hasEdu = true;
+            });
+            if (hasEdu) {
+                html += `<h4 style="color: ${corPreview}; border-bottom: 1px solid ${corPreview}; padding-bottom: 5px;"><i class="fas fa-graduation-cap"></i> FORMAÇÃO ACADÊMICA:</h4><ul>`;
+                eduItems.forEach(item => {
+                    const tipo = item.querySelector('.tipo-educacao').value;
+                    const instituicao = item.querySelector('.instituicao').value.trim();
+                    const inicio = item.querySelector('.ano-inicio').value;
+                    const termino = item.querySelector('.ano-termino').value;
+                    if (instituicao) {
+                        let eduText = `${tipo ? tipo + ' – ' : ''}${instituicao}`;
+                        if (inicio || termino) eduText += ` (${inicio || ''}${inicio && termino ? ' - ' : ''}${termino || ''})`;
+                        html += `<li>${eduText}</li>`;
+                    }
+                });
+                html += '</ul>';
+            }
+            // Idiomas
+            const idiomaItems = document.querySelectorAll('.idioma-item');
+            let hasIdioma = false;
+            idiomaItems.forEach(item => {
+                const nome = item.querySelector('.idioma-nome').value.trim();
+                if (nome) hasIdioma = true;
+            });
+            if (hasIdioma) {
+                html += `<h4 style="color: ${corPreview}; border-bottom: 1px solid ${corPreview}; padding-bottom: 5px;"><i class="fas fa-globe"></i> IDIOMAS:</h4><ul>`;
+                idiomaItems.forEach(item => {
+                    const nome = item.querySelector('.idioma-nome').value.trim();
+                    const nivel = item.querySelector('.nivel-idioma').value;
+                    if (nome) {
+                        html += `<li><strong>${nome}</strong> - ${nivel}</li>`;
+                    }
+                });
+                html += '</ul>';
+            }
+            // Habilidades
+            const skills = document.getElementById('skills').value.trim();
+            if (skills) {
+                html += `<h4 style="color: ${corPreview}; border-bottom: 1px solid ${corPreview}; padding-bottom: 5px;"><i class="fas fa-tools"></i> HABILIDADES:</h4><p>${skills.replace(/;/g, ', ')}</p>`; // Padronizar para vírgula
+            }
+            // Adicionais
+            const adicional = document.getElementById('adicional').value.trim();
+            if (adicional) {
+                html += `<h4 style="color: ${corPreview}; border-bottom: 1px solid ${corPreview}; padding-bottom: 5px;"><i class="fas fa-info-circle"></i> DETALHES ADICIONAIS:</h4><p>${adicional}</p>`;
+            }
+            preview.innerHTML = html;
+            preview.style.display = 'block';
+            preview.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function gerarCV() {
+            try {
+                if (!validarForm()) return;
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                const corPreta = [0, 0, 0]; // Preto para todas as letras
+                const nameFontSize = 22; // Reduzido para minimalismo
+                const titleFontSize = 14; // Reduzido
+                const contentFontSize = 10; // Reduzido
+                const contactFontSize = 10; // Reduzido
+                const spaceScale = 1.1; // Espaçamento mais compacto
+                doc.setFont('helvetica', 'normal');
+                let y = 20; // Margem superior maior para minimalismo
+
+                // Removido: Header decorativo para minimalismo
+
+                // Query DOM elements here
+                const exps = document.querySelectorAll('.experiencia');
+                const eduItems = document.querySelectorAll('.educacao-item');
+                const idiomaItems = document.querySelectorAll('.idioma-item');
+
+                // Contar seções com conteúdo
+                const obj = document.getElementById('objetivo').value.trim();
+                const skills = document.getElementById('skills').value.trim();
+                const adicional = document.getElementById('adicional').value.trim();
+                let sectionCount = 0;
+                if (obj) sectionCount++;
+                if (Array.from(exps).some(exp => exp.querySelector('.cargo').value.trim())) sectionCount++;
+                if (Array.from(eduItems).some(item => item.querySelector('.instituicao').value.trim())) sectionCount++;
+                if (Array.from(idiomaItems).some(item => item.querySelector('.idioma-nome').value.trim())) sectionCount++;
+                if (skills) sectionCount++;
+                if (adicional) sectionCount++;
+
+                // Foto
+                const larguraFoto = 20; // Reduzida para minimalismo
+                const alturaFoto = 25;
+                if (fotoBase64) {
+                    try {
+                        doc.addImage(fotoBase64, 'JPEG', 15, y + 5, larguraFoto, alturaFoto);
+                    } catch (imgErr) {
+                        // Ignorar erro silenciosamente
+                    }
+                }
+                // Nome em caps à direita da foto - preto
+                doc.setFontSize(nameFontSize);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...corPreta);
+                const nomePosX = fotoBase64 ? 45 : 20;
+                doc.text(document.getElementById('nome').value.toUpperCase(), nomePosX, y + 6);
+                y += 10 * spaceScale;
+                // Contatos - em preto
+                doc.setFontSize(contactFontSize);
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(...corPreta);
+                const civil = document.getElementById('estadoCivil').value;
+                const idade = document.getElementById('idade').value;
+                const cep = document.getElementById('cep').value;
+                const cidade = document.getElementById('cidade').value;
+                const uf = document.getElementById('uf').value;
+                const end = document.getElementById('endereco').value;
+                let civilAgeText = '';
+                if (civil || idade) civilAgeText = `${civil ? civil + ', ' : ''}${idade ? idade + ' anos' : ''}`;
+                let addressText = '';
+                if (cep || end || cidade || uf) {
+                    if (cep) addressText += `${formatarCep(cep)} – `;
+                    if (end) addressText += `${end} – `;
+                    if (cidade) addressText += `${cidade} – `;
+                    if (uf) addressText += `${uf}`;
+                }
+                if (civilAgeText) {
+                    doc.text(civilAgeText, nomePosX, y);
+                    y += 4 * spaceScale;
+                }
+                if (addressText) {
+                    doc.text(addressText, nomePosX, y);
+                    y += 4 * spaceScale;
+                }
+
+                // Email
+                doc.text(`E-mail: ${document.getElementById('email').value}`, nomePosX, y);
+                y += 4 * spaceScale;
+                // Telefones
+                let telText = '';
+                const tels = document.querySelectorAll('.telefone');
+                let firstTel = true;
+                tels.forEach(tel => {
+                    if (tel.value.trim()) {
+                        if (!firstTel) telText += ', ';
+                        const formatted = formatarTelefone(tel.value);
+                        const isWA = tel.closest('.telefone-group').querySelector('.whatsapp').checked;
+                        telText += `${formatted}${isWA ? ' (WhatsApp)' : ''}`;
+                        firstTel = false;
+                    }
+                });
+                if (telText) {
+                    const maxWidth = 170;
+                    const splitTexts = doc.splitTextToSize(`Telefone: ${telText}`, maxWidth);
+                    splitTexts.forEach((line, index) => {
+                        doc.text(line, nomePosX, y + (index * 3 * spaceScale));
+                    });
+                    y += splitTexts.length * 3 * spaceScale + 4 * spaceScale;
+                }
+                const linkedin = document.getElementById('linkedin').value;
+                if (linkedin) {
+                    doc.text(`LinkedIn: ${linkedin}`, nomePosX, y);
+                    // Adicionar link clicável no PDF
+                    const linkX = nomePosX + doc.getTextWidth(`LinkedIn: `);
+                    doc.link(linkedin, { pageNumber: 1, x: linkX, y: y - contactFontSize / 3, width: doc.getTextWidth(linkedin), height: 3 }, { url: linkedin });
+                    y += 4 * spaceScale;
+                }
+
+                // Espaço extra antes das seções
+                y += 6 * spaceScale;
+
+                // Seções principais
+                const sections = [
+                    { title: 'OBJETIVO', content: obj, hasContent: (c) => c.trim() !== '' },
+                    { title: 'EXPERIÊNCIA PROFISSIONAL', content: exps, hasContent: (c) => Array.from(c).some(exp => exp.querySelector('.cargo').value.trim()) },
+                    { title: 'FORMAÇÃO ACADÊMICA', content: eduItems, hasContent: (c) => Array.from(c).some(item => item.querySelector('.instituicao').value.trim()) },
+                    { title: 'IDIOMAS', content: idiomaItems, hasContent: (c) => Array.from(c).some(item => item.querySelector('.idioma-nome').value.trim()) },
+                    { title: 'HABILIDADES', content: skills, hasContent: (c) => c.trim() !== '' },
+                    { title: 'DETALHES ADICIONAIS', content: adicional, hasContent: (c) => c.trim() !== '' }
+                ];
+
+                sections.forEach(section => {
+                    if (section.hasContent(section.content)) {
+                        // Título da seção - preto e linha fina
+                        doc.setFontSize(titleFontSize);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setTextColor(...corPreta);
+                        doc.text(section.title, 20, y);
+                        doc.setLineWidth(0.5); // Linha mais fina
+                        doc.setDrawColor(...corPreta);
+                        doc.line(20, y + 2, 190, y + 2);
+                        y += 8 * spaceScale;
+                        doc.setFontSize(contentFontSize);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setTextColor(...corPreta);
+
+                        if (section.title === 'OBJETIVO') {
+                            const splitObj = doc.splitTextToSize(section.content.toUpperCase(), 170);
+                            splitObj.forEach((line, index) => {
+                                doc.text(line, 20, y + (index * 3.5 * spaceScale));
+                            });
+                            y += splitObj.length * 3.5 * spaceScale + 3 * spaceScale;
+                        } else if (section.title === 'EXPERIÊNCIA PROFISSIONAL') {
+                            const expsLocal = section.content;
+                            Array.from(expsLocal).forEach(exp => {
+                                const cargo = exp.querySelector('.cargo').value.trim();
+                                if (cargo) {
+                                    doc.setFont('helvetica', 'bold');
+                                    doc.setFontSize(Math.round(contentFontSize * 1.2));
+                                    doc.text(cargo.toUpperCase(), 20, y);
+                                    doc.setFontSize(contentFontSize);
+                                    y += 5 * spaceScale;
+                                    const empresa = exp.querySelector('.empresa').value.trim();
+                                    const periodo = exp.querySelector('.periodo').value.trim();
+                                    if (empresa || periodo) {
+                                        if (empresa) {
+                                            doc.setFont('helvetica', 'bold');
+                                            doc.text(empresa, 20, y);
+                                            const empWidth = doc.getTextWidth(empresa);
+                                            doc.setFont('helvetica', 'normal');
+                                            if (periodo) {
+                                                doc.text(` | ${periodo}`, 20 + empWidth, y);
+                                            }
+                                        } else if (periodo) {
+                                            doc.setFont('helvetica', 'normal');
+                                            doc.text(periodo, 20, y);
+                                        }
+                                    }
+                                    y += 4 * spaceScale;
+                                    const desc = exp.querySelector('.descricao').value.split(';').map(d => d.trim()).filter(d => d);
+                                    if (desc.length > 0) {
+                                        desc.forEach(bullet => {
+                                            const splitBullet = doc.splitTextToSize(`• ${bullet}`, 170);
+                                            splitBullet.forEach((line, index) => {
+                                                doc.text(line, 25, y + (index * 3 * spaceScale));
+                                            });
+                                            y += splitBullet.length * 3 * spaceScale + 1.5 * spaceScale;
+                                        });
+                                    }
+                                    y += 3 * spaceScale;
+                                }
+                            });
+                        } else if (['FORMAÇÃO ACADÊMICA', 'IDIOMAS'].includes(section.title)) {
+                            const items = section.content;
+                            Array.from(items).forEach(item => {
+                                let text = '';
+                                let isBoldName = false;
+                                let nome = '';
+                                let rest = '';
+                                if (section.title === 'FORMAÇÃO ACADÊMICA') {
+                                    const tipo = item.querySelector('.tipo-educacao').value;
+                                    const instituicao = item.querySelector('.instituicao').value.trim();
+                                    const inicio = item.querySelector('.ano-inicio').value;
+                                    const termino = item.querySelector('.ano-termino').value;
+                                    if (instituicao) text = `${tipo ? tipo + ' – ' : ''}${instituicao}${inicio || termino ? ` (${inicio || ''}${inicio && termino ? ' - ' : ''}${termino || ''})` : ''}`;
+                                } else if (section.title === 'IDIOMAS') {
+                                    nome = item.querySelector('.idioma-nome').value.trim();
+                                    const nivel = item.querySelector('.nivel-idioma').value;
+                                    if (nome) {
+                                        isBoldName = true;
+                                        rest = ` - ${nivel}`;
+                                    }
+                                }
+                                if (text || nome) {
+                                    if (isBoldName) {
+                                        doc.setFont('helvetica', 'bold');
+                                        doc.text(nome, 20, y);
+                                        const nomeWidth = doc.getTextWidth(nome);
+                                        doc.setFont('helvetica', 'normal');
+                                        if (rest) {
+                                            doc.text(rest, 20 + nomeWidth, y);
+                                        }
+                                    } else {
+                                        const splitText = doc.splitTextToSize(text, 170);
+                                        splitText.forEach((line, index) => {
+                                            doc.text(line, 20, y + (index * 3.5 * spaceScale));
+                                        });
+                                    }
+                                    y += 4 * spaceScale;
+                                }
+                            });
+                        } else if (section.title === 'HABILIDADES') {
+                            const skillText = section.content.replace(/;/g, ', ');
+                            const splitSkills = doc.splitTextToSize(skillText, 170);
+                            splitSkills.forEach((line, index) => {
+                                doc.text(line, 20, y + (index * 3.5 * spaceScale));
+                            });
+                            y += splitSkills.length * 3.5 * spaceScale + 3 * spaceScale;
+                        } else if (section.title === 'DETALHES ADICIONAIS') {
+                            const splitAdic = doc.splitTextToSize(section.content, 170);
+                            splitAdic.forEach((line, index) => {
+                                doc.text(line, 20, y + (index * 3.5 * spaceScale));
+                            });
+                            y += splitAdic.length * 3.5 * spaceScale + 2 * spaceScale;
+                        }
+                        y += 5 * spaceScale;
+                        if (y > 265) { // Ajustado para nova página
+                            doc.addPage();
+                            y = 20;
+                        }
+                    }
+                });
+
+                const nomePessoa = document.getElementById('nome').value.replace(/[^a-zA-Z0-9]/g, '_');
+                const nomeArquivo = `Curriculo_${nomePessoa}.pdf`;
+                doc.save(nomeArquivo);
+                showNotification('success', 'Seu CV foi gerado com sucesso! Baixe o PDF e conquiste novas oportunidades.');
+            } catch (e) {
+                showNotification('error', `Erro ao gerar PDF: ${e.message}. Tente novamente.`);
+            }
+        }
+    </script>
+</body>
+</html>
+</DOCUMENT>
